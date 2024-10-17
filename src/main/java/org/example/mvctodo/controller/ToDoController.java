@@ -43,9 +43,8 @@ public class ToDoController {
     }
 
     // Update an existing To-Do
-    @PostMapping("/update/{id}")
-    public String updateToDo(@PathVariable Long id, @ModelAttribute ToDo toDo) {
-        toDo.setId(id);
+    @PostMapping("/update")
+    public String updateToDo(@ModelAttribute ToDo toDo) {
         toDoService.saveToDo(toDo);
         return "redirect:/";
     }

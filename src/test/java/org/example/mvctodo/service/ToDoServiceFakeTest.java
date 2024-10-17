@@ -1,7 +1,7 @@
 package org.example.mvctodo.service;
 
 import org.example.mvctodo.model.ToDo;
-import org.example.mvctodo.repository.ToDoRepositoryStub;
+import org.example.mvctodo.repository.ToDoRepositoryFake;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,14 +10,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ToDoServiceStubTest {
+public class ToDoServiceFakeTest {
 
     private ToDoService toDoService;
 
     @BeforeEach
     public void setUp() {
         // Use the ToDoRepositoryStub instead of a real repository
-        ToDoRepositoryStub stub = new ToDoRepositoryStub();
+        ToDoRepositoryFake stub = new ToDoRepositoryFake();
         toDoService = new ToDoService(stub);  // Injecting the stub into the service
     }
 

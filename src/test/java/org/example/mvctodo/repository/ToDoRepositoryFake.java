@@ -4,7 +4,7 @@ import org.example.mvctodo.model.ToDo;
 
 import java.util.*;
 
-public class ToDoRepositoryStub implements IToDoRepository {
+public class ToDoRepositoryFake implements IToDoRepository {
 
     private final Map<Long, ToDo> stubData = new HashMap<>();
     private long idCounter = 1;
