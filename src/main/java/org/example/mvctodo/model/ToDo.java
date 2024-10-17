@@ -15,6 +15,15 @@ public class ToDo {
     private String title;
     private boolean completed;
 
+    public ToDo() {
+
+    }
+
+    public ToDo(boolean completed, String title) {
+        this.completed = completed;
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }
