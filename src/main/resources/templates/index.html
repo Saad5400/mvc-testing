@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>To-Do List</title>
+	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+<div class="min-h-screen flex items-center justify-center">
+	<div class="w-full max-w-2xl bg-white shadow-lg rounded-lg p-8">
+		<h1 class="text-3xl font-bold text-center mb-8">To-Do List</h1>
+
+		<div class="flex justify-between mb-4">
+			<a href="/add" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Add New To-Do</a>
+		</div>
+
+		<table class="min-w-full bg-white border-collapse border border-gray-300">
+			<thead>
+			<tr>
+				<th class="py-2 px-4 border border-gray-300">Title</th>
+				<th class="py-2 px-4 border border-gray-300">Completed</th>
+				<th class="py-2 px-4 border border-gray-300">Actions</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="todo : ${todos}">
+				<td class="border px-4 py-2" th:text="${todo.title}"></td>
+				<td class="border px-4 py-2" th:text="${todo.completed ? 'Yes' : 'No'}"></td>
+				<td class="border px-4 py-2">
+					<a th:href="@{/edit/{id}(id=${todo.id})}" class="text-blue-600 hover:underline">Edit</a> |
+					<a th:href="@{/delete/{id}(id=${todo.id})}" class="text-red-600 hover:underline">Delete</a>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</body>
+
+</html>
