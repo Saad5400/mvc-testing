@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        // Specify the version of Maven and JDK you are using (if necessary)
-        maven 'Maven 3.x'
-        jdk 'Java 17'
-    }
-
     stages {
         // Checkout the code from the repository
         stage('Checkout') {
