@@ -3,7 +3,7 @@ name: Trigger Jenkins Job on Push
 on:
   push:
     branches:
-      - main  # Replace 'main' with your branch if needed
+      - master
 
 jobs:
   trigger-jenkins:
