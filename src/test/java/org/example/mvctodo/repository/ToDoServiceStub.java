@@ -2,30 +2,34 @@ package org.example.mvctodo.repository;
 
 import org.example.mvctodo.model.ToDo;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ToDoServiceStub implements IToDoRepository {
+    private HashMap<Long, ToDo> data = new HashMap<>();
+    long idCounter = 4L;
 
-    List<ToDo> data = List.of(
-            new ToDo(false, "Hi"),
-            new ToDo(true, "True"),
-            new ToDo(false, "s")
-    );
+    public ToDoServiceStub() {
+        data.put(1L, new ToDo(false, "Hi"));
+        data.put(2L, new ToDo(true, "True"));
+        data.put(3L, new ToDo(false, "s"));
+    }
 
     @Override
     public List<ToDo> findAll() {
-        return data;
+        return new ArrayList<>(data.values());
     }
 
     @Override
     public Optional<ToDo> findById(Long id) {
-        return Optional.ofNullable(data.get(id.intValue()));
+        return Optional.ofNullable(data.get(id));
     }
 
     @Override
     public ToDo save(ToDo toDo) {
-        data.add(toDo);
+        if (toDo.getId() == null) {
+            toDo.setId(idCounter++);
+        }
+        data.put(toDo.getId(), toDo);
         return toDo;
     }
 
