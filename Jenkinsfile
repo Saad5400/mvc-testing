@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        FLY_API_TOKEN = credentials('FLY_API_TOKEN')
+    }
+
     stages {
         // Checkout the code from the repository
         stage('Checkout') {
@@ -12,38 +16,29 @@ pipeline {
         // Build the project using Maven Wrapper
         stage('Build') {
             steps {
-                sh './mvnw clean install'
+                sh 'mvn clean install'
             }
         }
 
         // Run unit tests using JUnit
         stage('Test') {
             steps {
-                sh './mvnw test'
+                sh 'mvn test'
             }
         }
 
-        // Package the application (e.g., into a JAR or WAR)
-        stage('Package') {
-            steps {
-                sh './mvnw package'
-            }
-        }
-
-        // Deploy the application
+        // Deploy the application to Fly.io
         stage('Deploy') {
             steps {
-                // Deploy to a staging/production server, such as Tomcat or Docker
-                echo 'Deploying application...'
-                // Add your deployment script here
+                // install the Fly CLI
+                sh 'curl -L https://fly.io/install.sh | sh'
+                // deploy the application
+                sh '/var/lib/jenkins/.fly/bin/flyctl deploy'
             }
         }
     }
 
     post {
-        always {
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-        }
         success {
             echo 'Build and deployment succeeded!'
         }
