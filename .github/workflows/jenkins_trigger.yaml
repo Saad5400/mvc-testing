@@ -11,4 +11,6 @@ jobs:
 
     steps:
       - name: Trigger Jenkins Job
-        run: curl "http://46.101.131.225:8080/job/ToDo%20test%20and%20deploy/build?token=SecureToken123400943651495734531834"
+        run: |
+          curl --silent --show-error --fail \
+          "http://46.101.131.225:8080/job/ToDo%20test%20and%20deploy/build?token=SecureToken123400943651495734531834"
