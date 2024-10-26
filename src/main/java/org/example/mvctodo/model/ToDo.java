@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class ToDo {
@@ -12,16 +14,19 @@ public class ToDo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Title is mandatory")
+    @Size(min = 3, message = "Title must be at least 3 characters long")
     private String title;
+
     private boolean completed;
 
     public ToDo() {
-
+        // Default constructor
     }
 
     public ToDo(boolean completed, String title) {
         this.completed = completed;
-        this.title = title;
+        this.setTitle(title); // Using setTitle to ensure space stripping
     }
 
     public Long getId() {
@@ -37,7 +42,7 @@ public class ToDo {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title != null ? title.strip() : null; // Strip spaces
     }
 
     public boolean isCompleted() {

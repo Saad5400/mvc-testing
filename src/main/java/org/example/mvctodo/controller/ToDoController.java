@@ -2,9 +2,11 @@ package org.example.mvctodo.controller;
 
 import org.example.mvctodo.model.ToDo;
 import org.example.mvctodo.service.ToDoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -27,9 +29,12 @@ public class ToDoController {
         return "add-todo";
     }
 
-    // Save a new To-Do
+    // Save a new To-Do with validation
     @PostMapping("/save")
-    public String saveToDo(@ModelAttribute ToDo toDo) {
+    public String saveToDo(@Valid @ModelAttribute ToDo toDo, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "add-todo"; // Return to the form with error messages
+        }
         toDoService.saveToDo(toDo);
         return "redirect:/";
     }
@@ -42,9 +47,12 @@ public class ToDoController {
         return "edit-todo";
     }
 
-    // Update an existing To-Do
+    // Update an existing To-Do with validation
     @PostMapping("/update")
-    public String updateToDo(@ModelAttribute ToDo toDo) {
+    public String updateToDo(@Valid @ModelAttribute ToDo toDo, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "edit-todo"; // Return to the form with error messages
+        }
         toDoService.saveToDo(toDo);
         return "redirect:/";
     }
