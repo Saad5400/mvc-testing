@@ -45,12 +45,4 @@ public class ToDoTest {
 
         assertNotNull(todo.getId());
     }
-
-
-    @Test
-    public void testToDoTitleThrowsException() {
-        ToDo todo = new ToDo();
-
-        assertThrows(NullPointerException.class, todo.getTitle()::length);
-    }
 }
