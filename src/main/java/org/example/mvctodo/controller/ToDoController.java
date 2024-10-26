@@ -3,7 +3,6 @@ package org.example.mvctodo.controller;
 import org.example.mvctodo.model.ToDo;
 import org.example.mvctodo.service.ToDoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,8 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class ToDoController {
 
-    @Autowired
-    private ToDoService toDoService;
+    private final ToDoService toDoService;
+
+    public ToDoController(ToDoService toDoService) {
+        this.toDoService = toDoService;
+    }
 
     // Display the list of To-Do items, separated into pending and completed
     @GetMapping("/")

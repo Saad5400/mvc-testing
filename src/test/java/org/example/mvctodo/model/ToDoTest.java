@@ -17,7 +17,7 @@ public class ToDoTest {
         assertEquals("Test To-Do", todo.getTitle());
         assertFalse(todo.isCompleted());
         assertNotNull(todo.getTitle(), "Title should not be null");
-        assertNotNull(todo.getId(),"Id should not be null");
+        assertNotNull(todo.getId(), "Id should not be null");
 
     }
 
@@ -51,8 +51,6 @@ public class ToDoTest {
     public void testToDoTitleThrowsException() {
         ToDo todo = new ToDo();
 
-        assertThrows(NullPointerException.class, () -> {
-            todo.getTitle().length();
-        });
+        assertThrows(NullPointerException.class, todo.getTitle()::length);
     }
 }

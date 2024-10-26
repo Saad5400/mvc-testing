@@ -7,10 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.InOrder;
 
-import java.util.Optional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,122 +26,190 @@ public class ToDoServiceMockTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialize the mock objects
         MockitoAnnotations.openMocks(this);
     }
 
-    // Mock-based test for getting all ToDos
     @Test
     public void testGetAllToDos() {
-        // Given: Mocked repository returning a list of ToDos
         List<ToDo> mockToDos = Arrays.asList(new ToDo(), new ToDo());
         when(toDoRepository.findAll()).thenReturn(mockToDos);
 
-        // When: Call the service method
         List<ToDo> result = toDoService.getAllToDos();
 
-        // Then: Verify the results and method call counts
         assertEquals(2, result.size(), "Should return 2 ToDos");
-        verify(toDoRepository, times(1)).findAll();  // Ensure `findAll` is called once
+
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).findAll();
+        inOrder.verifyNoMoreInteractions();  // Ensures no further interactions happened after findAll
     }
 
-    // Mock-based test for getting a single ToDo by ID
+    @Test
+    public void testGetPendingToDos() {
+        // Given: Two pending ToDos
+        ToDo pendingToDo1 = new ToDo();
+        pendingToDo1.setId(1L);
+        pendingToDo1.setTitle("Pending ToDo 1");
+        pendingToDo1.setCompleted(false);
+
+        ToDo pendingToDo2 = new ToDo();
+        pendingToDo2.setId(2L);
+        pendingToDo2.setTitle("Pending ToDo 2");
+        pendingToDo2.setCompleted(false);
+
+        when(toDoRepository.findAll()).thenReturn(Arrays.asList(pendingToDo1, pendingToDo2));
+
+        // When: Retrieving only pending ToDos
+        List<ToDo> result = toDoService.getPendingToDos();
+
+        // Then: Both ToDos should be returned
+        assertEquals(2, result.size(), "Should return 2 pending ToDos");
+        assertTrue(result.stream().noneMatch(ToDo::isCompleted), "All returned ToDos should be pending");
+
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).findAll();
+        inOrder.verifyNoMoreInteractions();
+    }
+
+
+    @Test
+    public void testGetCompletedToDos() {
+        // Given: Two completed ToDos
+        ToDo completedToDo1 = new ToDo();
+        completedToDo1.setId(1L);
+        completedToDo1.setTitle("Completed ToDo 1");
+        completedToDo1.setCompleted(true);
+
+        ToDo completedToDo2 = new ToDo();
+        completedToDo2.setId(2L);
+        completedToDo2.setTitle("Completed ToDo 2");
+        completedToDo2.setCompleted(true);
+
+        when(toDoRepository.findAll()).thenReturn(Arrays.asList(completedToDo1, completedToDo2));
+
+        // When: Retrieving only completed ToDos
+        List<ToDo> result = toDoService.getCompletedToDos();
+
+        // Then: Both ToDos should be returned
+        assertEquals(2, result.size(), "Should return 2 completed ToDos");
+        assertTrue(result.stream().allMatch(ToDo::isCompleted), "All returned ToDos should be completed");
+
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).findAll();
+        inOrder.verifyNoMoreInteractions();
+    }
+
+
+    @Test
+    public void testMarkAsComplete() {
+        ToDo todo = new ToDo();
+        todo.setCompleted(false);
+        when(toDoRepository.findById(1L)).thenReturn(Optional.of(todo));
+
+        toDoService.markAsComplete(1L);
+
+        assertTrue(todo.isCompleted(), "ToDo should be marked as complete");
+
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).findById(1L);
+        inOrder.verify(toDoRepository).save(todo);
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void testMarkAsPending() {
+        ToDo todo = new ToDo();
+        todo.setCompleted(true);
+        when(toDoRepository.findById(1L)).thenReturn(Optional.of(todo));
+
+        toDoService.markAsPending(1L);
+
+        assertFalse(todo.isCompleted(), "ToDo should be marked as pending");
+
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).findById(1L);
+        inOrder.verify(toDoRepository).save(todo);
+        inOrder.verifyNoMoreInteractions();
+    }
+
     @Test
     public void testGetToDoById() {
-        // Given: Mocked repository returning a ToDo
         ToDo mockToDo = new ToDo();
         mockToDo.setId(1L);
         when(toDoRepository.findById(1L)).thenReturn(Optional.of(mockToDo));
 
-        // When: Call the service method
         Optional<ToDo> result = toDoService.getToDoById(1L);
 
-        // Then: Verify the result and the order of method calls
         assertTrue(result.isPresent(), "ToDo should be present");
         assertEquals(1L, result.get().getId(), "ID should match");
 
-        verify(toDoRepository, times(1)).findById(1L);  // Ensure findById is called exactly once
-        verify(toDoRepository, never()).deleteById(anyLong());  // Ensure deleteById is never called
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).findById(1L);
+        inOrder.verifyNoMoreInteractions();
     }
 
-    // Mock-based test for saving a new ToDo
     @Test
     public void testSaveToDo() {
-        // Given: Mocked repository saving a ToDo
         ToDo mockToDo = new ToDo();
         mockToDo.setTitle("New ToDo");
 
         when(toDoRepository.save(mockToDo)).thenReturn(mockToDo);
 
-        // When: Call the service method
         ToDo result = toDoService.saveToDo(mockToDo);
 
-        // Then: Verify save is called and the correct order
         assertNotNull(result, "Saved ToDo should not be null");
         assertEquals("New ToDo", result.getTitle(), "Title should match");
 
-        verify(toDoRepository, times(1)).save(mockToDo);  // Ensure save is called once
-        verify(toDoRepository, times(1)).save(any(ToDo.class));  // Ensure save is called exactly once with any ToDo
-        verifyNoMoreInteractions(toDoRepository);  // No more interactions should occur with the repository
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).save(mockToDo);
+        inOrder.verifyNoMoreInteractions();
     }
 
-    // Mock-based test for deleting a ToDo by ID
     @Test
     public void testDeleteToDoById() {
-        // When: Call the service method
         toDoService.deleteToDoById(1L);
 
-        // Then: Verify the method call and order
-        verify(toDoRepository, times(1)).deleteById(1L);  // Ensure deleteById is called once
-        verify(toDoRepository, never()).findById(1L);  // Ensure findById is never called
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).deleteById(1L);
+        inOrder.verifyNoMoreInteractions();
     }
 
-    // Test for calling save twice and ensuring the method is called in order
     @Test
     public void testSaveToDoMultipleCalls() {
-        // Given: Mocked repository with multiple save calls
         ToDo todo1 = new ToDo();
         ToDo todo2 = new ToDo();
 
-        // When: Save two ToDos
         toDoService.saveToDo(todo1);
         toDoService.saveToDo(todo2);
 
-        // Then: Verify that save was called twice in the correct order
-        verify(toDoRepository, times(2)).save(any(ToDo.class));  // Save should be called twice
-        verify(toDoRepository).save(todo1);  // First save should be with todo1
-        verify(toDoRepository).save(todo2);  // Second save should be with todo2
-        verifyNoMoreInteractions(toDoRepository);  // Ensure no more interactions occur
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).save(todo1);
+        inOrder.verify(toDoRepository).save(todo2);
+        inOrder.verifyNoMoreInteractions();
     }
 
-    // Test for ensuring the order of method calls
     @Test
-    public void testMethodCallOrder() {
-        // Given: Mocked repository with specific calls
+    public void testMethodCallOrder_GetByIdThenSave() {
         ToDo mockToDo = new ToDo();
         when(toDoRepository.findById(1L)).thenReturn(Optional.of(mockToDo));
 
-        // When: Call getById and then save
         toDoService.getToDoById(1L);
         toDoService.saveToDo(mockToDo);
 
-        // Then: Ensure method calls happened in the correct order
-        inOrder(toDoRepository).verify(toDoRepository).findById(1L);  // findById should be called first
-        inOrder(toDoRepository).verify(toDoRepository).save(mockToDo);  // save should be called after findById
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).findById(1L);
+        inOrder.verify(toDoRepository).save(mockToDo);
+        inOrder.verifyNoMoreInteractions();
     }
 
-    // Test with mock ensuring `delete` is not called when save is
     @Test
     public void testSaveDoesNotCallDelete() {
-        // Given: Mocked repository
         ToDo todo = new ToDo();
         when(toDoRepository.save(todo)).thenReturn(todo);
 
-        // When: Save a ToDo
         toDoService.saveToDo(todo);
 
-        // Then: Ensure delete is not called
-        verify(toDoRepository, times(1)).save(todo);  // Save should be called once
-        verify(toDoRepository, never()).deleteById(anyLong());  // deleteById should never be called
+        InOrder inOrder = inOrder(toDoRepository);
+        inOrder.verify(toDoRepository).save(todo);
+        inOrder.verifyNoMoreInteractions();
     }
 }
