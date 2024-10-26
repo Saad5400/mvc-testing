@@ -24,11 +24,6 @@ public class ToDo {
         // Default constructor
     }
 
-    public ToDo(boolean completed, String title) {
-        this.completed = completed;
-        this.setTitle(title); // Using setTitle to ensure space stripping
-    }
-
     public Long getId() {
         return id;
     }
