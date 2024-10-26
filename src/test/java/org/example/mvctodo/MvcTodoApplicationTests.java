@@ -8,6 +8,7 @@ class MvcTodoApplicationTests {
 
     @Test
     void contextLoads() {
+        // This test will pass if the application context loads successfully
     }
 
 }

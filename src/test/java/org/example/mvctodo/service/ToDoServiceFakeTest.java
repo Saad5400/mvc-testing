@@ -22,7 +22,7 @@ public class ToDoServiceFakeTest {
     }
 
     @Test
-    public void testGetAllToDos_WithStub() {
+    public void testGetAllToDos() {
         // Given: Two ToDos are saved
         ToDo todo1 = new ToDo();
         todo1.setTitle("First ToDo");
@@ -40,7 +40,80 @@ public class ToDoServiceFakeTest {
     }
 
     @Test
-    public void testGetToDoById_WithStub() {
+    public void testGetPendingToDos() {
+        // Given: One pending ToDo and one completed ToDo
+        ToDo pendingTodo = new ToDo();
+        pendingTodo.setTitle("Pending ToDo");
+        toDoService.saveToDo(pendingTodo);
+
+        ToDo completedTodo = new ToDo();
+        completedTodo.setTitle("Completed ToDo");
+        completedTodo.setCompleted(true);
+        toDoService.saveToDo(completedTodo);
+
+        // When: We retrieve only pending ToDos
+        List<ToDo> result = toDoService.getPendingToDos();
+
+        // Then: Verify only the pending ToDo is returned
+        assertEquals(1, result.size(), "Should return 1 pending ToDo");
+        assertFalse(result.get(0).isCompleted(), "ToDo should not be completed");
+    }
+
+    @Test
+    public void testGetCompletedToDos() {
+        // Given: One pending ToDo and one completed ToDo
+        ToDo pendingTodo = new ToDo();
+        pendingTodo.setTitle("Pending ToDo");
+        toDoService.saveToDo(pendingTodo);
+
+        ToDo completedTodo = new ToDo();
+        completedTodo.setTitle("Completed ToDo");
+        completedTodo.setCompleted(true);
+        toDoService.saveToDo(completedTodo);
+
+        // When: We retrieve only completed ToDos
+        List<ToDo> result = toDoService.getCompletedToDos();
+
+        // Then: Verify only the completed ToDo is returned
+        assertEquals(1, result.size(), "Should return 1 completed ToDo");
+        assertTrue(result.get(0).isCompleted(), "ToDo should be completed");
+    }
+
+    @Test
+    public void testMarkAsComplete() {
+        // Given: A pending ToDo
+        ToDo todo = new ToDo();
+        todo.setTitle("Pending ToDo");
+        toDoService.saveToDo(todo);
+
+        // When: We mark the ToDo as complete
+        toDoService.markAsComplete(todo.getId());
+
+        // Then: Verify the ToDo is marked as complete
+        Optional<ToDo> result = toDoService.getToDoById(todo.getId());
+        assertTrue(result.isPresent(), "ToDo should be found");
+        assertTrue(result.get().isCompleted(), "ToDo should be marked as complete");
+    }
+
+    @Test
+    public void testMarkAsPending() {
+        // Given: A completed ToDo
+        ToDo todo = new ToDo();
+        todo.setTitle("Completed ToDo");
+        todo.setCompleted(true);
+        toDoService.saveToDo(todo);
+
+        // When: We mark the ToDo as pending
+        toDoService.markAsPending(todo.getId());
+
+        // Then: Verify the ToDo is marked as pending
+        Optional<ToDo> result = toDoService.getToDoById(todo.getId());
+        assertTrue(result.isPresent(), "ToDo should be found");
+        assertFalse(result.get().isCompleted(), "ToDo should be marked as pending");
+    }
+
+    @Test
+    public void testGetToDoById() {
         // Given: One ToDo is saved
         ToDo todo = new ToDo();
         todo.setTitle("Test ToDo");
@@ -55,7 +128,7 @@ public class ToDoServiceFakeTest {
     }
 
     @Test
-    public void testSaveToDo_WithStub() {
+    public void testSaveToDo() {
         // Given: A new ToDo
         ToDo todo = new ToDo();
         todo.setTitle("Save this ToDo");
@@ -69,7 +142,7 @@ public class ToDoServiceFakeTest {
     }
 
     @Test
-    public void testDeleteToDo_WithStub() {
+    public void testDeleteToDo() {
         // Given: A ToDo is saved
         ToDo todo = new ToDo();
         todo.setTitle("To be deleted");
@@ -84,7 +157,7 @@ public class ToDoServiceFakeTest {
     }
 
     @Test
-    public void testGetToDoById_NotFound_WithStub() {
+    public void testGetToDoById_NotFound() {
         // Given: No ToDo is saved
 
         // When: We try to retrieve a non-existent ToDo by ID
@@ -95,7 +168,7 @@ public class ToDoServiceFakeTest {
     }
 
     @Test
-    public void testUpdateToDo_WithStub() {
+    public void testUpdateToDo() {
         // Given: A ToDo is saved
         ToDo todo = new ToDo();
         todo.setTitle("Original Title");
