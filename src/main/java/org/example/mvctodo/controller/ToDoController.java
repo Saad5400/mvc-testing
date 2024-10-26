@@ -33,6 +33,7 @@ public class ToDoController {
     @PostMapping("/save")
     public String saveToDo(@Valid @ModelAttribute ToDo toDo, BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("todos", toDoService.getAllToDos());
             return "add-todo"; // Return to the form with error messages
         }
         toDoService.saveToDo(toDo);
@@ -51,6 +52,7 @@ public class ToDoController {
     @PostMapping("/update")
     public String updateToDo(@Valid @ModelAttribute ToDo toDo, BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("todos", toDoService.getAllToDos());
             return "edit-todo"; // Return to the form with error messages
         }
         toDoService.saveToDo(toDo);
