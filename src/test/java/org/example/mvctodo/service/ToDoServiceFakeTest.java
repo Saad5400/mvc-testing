@@ -5,8 +5,10 @@ import org.example.mvctodo.repository.ToDoRepositoryFake;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +22,7 @@ public class ToDoServiceFakeTest {
         ToDoRepositoryFake stub = new ToDoRepositoryFake();
         toDoService = new ToDoService(stub);  // Injecting the stub into the service
     }
+
 
     @Test
     public void testGetAllToDos() {
@@ -38,7 +41,29 @@ public class ToDoServiceFakeTest {
         // Then: Verify the number of ToDos returned
         assertEquals(2, result.size(), "Should return 2 ToDos");
     }
+    @Test
+    public void testNoDuplicateId() {
+        ToDo toDo1 = new ToDo();
+        toDo1.setId(1L);
+        toDo1.setTitle("Buy groceries");
 
+        ToDo toDo2 = new ToDo();
+        toDo2.setId(2L);
+        toDo2.setTitle("Finish project");
+
+        ToDo toDo3 = new ToDo();
+        toDo3.setId(1L); // Duplicate ID to test duplicate handling
+        toDo3.setTitle("Read a book");
+
+        List<ToDo> toDos = List.of(toDo1, toDo2, toDo3);
+
+        Set<Long> ids = new HashSet<>();
+
+        for (ToDo toDo : toDos) {
+            assertFalse(ids.contains(toDo.getId()), "Duplicate id found: " + toDo.getId());
+            ids.add(toDo.getId());
+        }
+    }
     @Test
     public void testGetPendingToDos() {
         // Given: One pending ToDo and one completed ToDo
