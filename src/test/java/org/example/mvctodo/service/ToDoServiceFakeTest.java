@@ -52,7 +52,7 @@ public class ToDoServiceFakeTest {
         toDo2.setTitle("Finish project");
 
         ToDo toDo3 = new ToDo();
-        toDo3.setId(1L); // Duplicate ID to test duplicate handling
+        toDo3.setId(3L); // Duplicate ID to test duplicate handling
         toDo3.setTitle("Read a book");
 
         List<ToDo> toDos = List.of(toDo1, toDo2, toDo3);
