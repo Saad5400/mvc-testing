@@ -57,7 +57,7 @@ public class ToDoController {
         toDoService.markAsPending(id);
         return "redirect:/";
     }
-    //
+    // Delete a To-Do
     // Delete a To-Do
     @GetMapping("/delete/{id}")
     public String deleteToDo(@PathVariable Long id) {
