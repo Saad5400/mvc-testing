@@ -27,7 +27,7 @@ public class ToDoController {
 
     // Show the form for adding a new To-Do
     @GetMapping("/add")
-    public String addToDoForm(Model model) {
+    public String addToDoForm(Long id, Model model) {
         model.addAttribute("todo", new ToDo());
         return "add-todo";
     }
@@ -57,7 +57,7 @@ public class ToDoController {
         toDoService.markAsPending(id);
         return "redirect:/";
     }
-    // Delete a To-Do
+
     // Delete a To-Do
     @GetMapping("/delete/{id}")
     public String deleteToDo(@PathVariable Long id) {
