@@ -14,7 +14,7 @@ public class ToDoController {
     private final ToDoService toDoService;
 
     public ToDoController(ToDoService toDoService) {
-        this.toDoService = toDoService;
+         this.toDoService = toDoService;
     }
 
     // Display the list of To-Do items, separated into pending and completed
@@ -57,7 +57,7 @@ public class ToDoController {
         toDoService.markAsPending(id);
         return "redirect:/";
     }
-
+    //
     // Delete a To-Do
     @GetMapping("/delete/{id}")
     public String deleteToDo(@PathVariable Long id) {
