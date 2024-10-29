@@ -12,7 +12,7 @@ pipeline {
         // Build the project and run the tests
         stage('Build') {
             steps {
-                sh 'mvn clean test'
+                sh 'mvn clean test --no-transfer-progress'
             }
         }
 
