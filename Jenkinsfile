@@ -9,17 +9,10 @@ pipeline {
             }
         }
 
-        // Build the project using Maven Wrapper
+        // Build the project and run the tests
         stage('Build') {
             steps {
-                sh 'mvn clean install'
-            }
-        }
-
-        // Run unit tests using JUnit
-        stage('Test') {
-            steps {
-                sh 'mvn test'
+                sh 'mvn clean test'
             }
         }
 
