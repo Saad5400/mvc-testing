@@ -13,7 +13,7 @@ public class ToDoTest {
         todo.setTitle("Test To-Do");
         todo.setCompleted(false);
 
-        assertEquals(5L, todo.getId());
+        assertEquals(1L, todo.getId());
         assertEquals("Test To-Do", todo.getTitle());
         assertFalse(todo.isCompleted());
         assertNotNull(todo.getTitle(), "Title should not be null");
