@@ -30,7 +30,6 @@ pipeline {
             steps {
                 script {
                     sh 'docker stop spring-boot-app || true && docker rm spring-boot-app || true'
-
                     sh 'docker run -d --name spring-boot-app -p 8081:8080 mvc-image'
                 }
             }
@@ -39,15 +38,33 @@ pipeline {
 
     post {
         success {
-            mail to: 'bilal.adila13@gmail.com',
-                 subject: "SUCCESS: Build and Deployment Succeeded",
-                 body: "Good news! The Jenkins pipeline executed successfully and your project was deployed."
+            script {
+                // Get the committer's name
+                def committer = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
+
+                // Send the success email with committer's name only
+                mail to: 'bilal.adila13@gmail.com',
+                     subject: "SUCCESS: Build and Deployment Succeeded",
+                     body: """Good news! The Jenkins pipeline executed successfully and your project was deployed.
+
+Committer: ${committer}
+"""
+            }
             echo 'Build and deployment succeeded!'
         }
         failure {
-            mail to: 'bilal.adila13@gmail.com',
-                 subject: "FAILURE: Build or Deployment Failed",
-                 body: "Unfortunately, the Jenkins pipeline failed. Please check the console output for more details."
+            script {
+                // Get the committer's name
+                def committer = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
+
+                // Send the failure email with committer's name only
+                mail to: 'bilal.adila13@gmail.com',
+                     subject: "FAILURE: Build or Deployment Failed",
+                     body: """Unfortunately, the Jenkins pipeline failed. Please check the console output for more details.
+
+Committer: ${committer}
+"""
+            }
             echo 'Build or deployment failed.'
         }
     }
